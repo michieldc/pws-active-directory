@@ -99,14 +99,14 @@ function UserCheck {
         #Create users in AD
     New-ADUser -Name "$voornaam $naam" -SamAccountName $account -DisplayName "$voornaam $naam" -UserPrincipalName "$account" -AccountPassword $secpasswd -GivenName "$voornaam" -Surname "$naam" -Enabled $true -HomeDrive "L:"
     
-    # adding the homedirectory to the user
-    Write-Host "adding a homefolder for $($account)"
-    $Path = "\\EARTH\UserFolders\$account"
+    # adding the sharedfolder to the user
+    Write-Host "adding a sharedfolder for $($account)"
+    $Path = "\\EARTH\SharedFolders\$account"
     set-aduser -identity $account -HomeDirectory "$Path" -HomeDrive "L:"
 
 
     if (!(Test-Path -path "$Path")) {
-        New-Item -ItemType directory -Path "\\EARTH\UserFolders" -Name "$account"
+        New-Item -ItemType directory -Path "\\EARTH\SharedFolders" -Name "$account"
     }else{
         Write-Host ""
     }
