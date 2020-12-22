@@ -127,3 +127,30 @@ We also added the creation of a sharedFolder.
 
 Afterwards we do the same as in v1. For that information - check [v1](report-v1.md)
 
+## function checkForDisable
+
+Sometimes in a company a Users tends their resignation. Thats why the checkForDisabled is created. This checks if a user no longer exits in the csv file. If so, his or her account gets disabled in AD.
+
+```ps1
+function checkForDisable($thisuser){
+    if( $users.'Account'-Contains $thisuser.'SamAccountName'){
+        Write-Host $thisuser.'SamAccountName'
+        Enable-ADAccount -Identity $thisuser.'SamAccountName'
+        Write-Host "This user exists in the csv, no need to disable"
+    }else{
+        Write-Host $thisuser.'SamAccountName'
+        Write-Host "this user is now disabled"
+        Disable-ADAccount -Identity $thisuser.'SamAccountName'
+    }
+}
+```
+
+We check it against all the users in AD.
+
+```ps1
+$adusers = Get-ADUser -Filter * -SearchBase "OU=CMAfdelingen, DC=$DC, DC=local"
+
+ForEach($aduser in $adusers){
+    checkForDisable($aduser);
+}
+```
